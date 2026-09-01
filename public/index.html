@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learnora — Notes, organized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1F2D24;
+    --bg-soft: #263A2C;
+    --bg-softer: #2C4433;
+    --paper: #FBF7EE;
+    --paper-dim: #F1EADA;
+    --ink: #F1EDE2;
+    --ink-dim: #B9C4B7;
+    --ink-faint: #82917F;
+    --amber: #E8A33D;
+    --amber-ink: #402805;
+    --coral: #E86C56;
+    --teal: #6FA8A0;
+    --line: rgba(241,237,226,0.14);
+    --line-strong: rgba(241,237,226,0.28);
+    --radius-card: 3px;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber);color:var(--amber-ink);}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- Top nav ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 32px;
+    background:rgba(31,45,36,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--serif); font-size:22px; font-weight:600; letter-spacing:0.2px;}
+  .brand-mark{
+    width:30px;height:30px; border-radius:50%;
+    background:var(--amber); color:var(--amber-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-weight:700; font-size:16px;
+    transform:rotate(-6deg);
+  }
+  .nav-links{display:flex; gap:4px; align-items:center;}
+  .nav-btn{
+    background:none; border:none; color:var(--ink-dim);
+    font-size:14.5px; font-weight:500; padding:9px 15px; border-radius:20px;
+    transition:background 0.15s, color 0.15s;
+  }
+  .nav-btn:hover{color:var(--ink); background:var(--bg-softer);}
+  .nav-btn.active{color:var(--bg); background:var(--paper); font-weight:600;}
+  .nav-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--amber); outline-offset:2px;
+  }
+  .topbar-right{display:flex; align-items:center; gap:10px;}
+
+  /* ---------- Auth ---------- */
+  .auth-area{position:relative;}
+  .user-chip{display:flex; align-items:center; gap:8px; background:var(--bg-soft); border:1px solid var(--line-strong); padding:6px 12px 6px 6px; border-radius:20px; position:relative;}
+  .user-avatar{width:26px;height:26px;border-radius:50%; background:var(--amber); color:var(--amber-ink); display:flex;align-items:center;justify-content:center; font-weight:700; font-size:12px; font-family:var(--serif); flex-shrink:0;}
+  .user-dropdown{position:absolute; top:calc(100% + 8px); right:0; background:var(--bg-soft); border:1px solid var(--line-strong); border-radius:8px; padding:6px; min-width:150px; display:none; z-index:60; box-shadow:0 10px 24px rgba(0,0,0,0.35);}
+  .user-dropdown.show{display:block;}
+  .user-dropdown button{width:100%; text-align:left; background:none; border:none; color:var(--ink); font-size:13.5px; padding:9px 10px; border-radius:6px;}
+  .user-dropdown button:hover{background:var(--bg-softer);}
+  .auth-tabs{display:flex; gap:4px; margin-bottom:18px; background:var(--bg-softer); padding:4px; border-radius:8px;}
+  .auth-tab{flex:1; text-align:center; padding:8px; border-radius:6px; border:none; background:none; color:var(--ink-dim); font-size:13.5px; font-weight:600;}
+  .auth-tab.active{background:var(--paper); color:var(--bg);}
+  .google-btn{width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--paper); color:#2b2b2b; border:none; border-radius:6px; padding:12px; font-size:14px; font-weight:600; margin-bottom:14px;}
+  .google-btn:hover{background:#fff;}
+  .google-g{width:18px;height:18px;border-radius:50%; background:#fff; display:flex;align-items:center;justify-content:center; font-family:var(--sans); font-weight:800; font-size:12px; color:#4285F4; border:1px solid #ddd; flex-shrink:0;}
+  .auth-divider{display:flex; align-items:center; gap:10px; color:var(--ink-faint); font-size:12px; margin-bottom:14px;}
+  .auth-divider::before, .auth-divider::after{content:""; flex:1; height:1px; background:var(--line-strong);}
+  .auth-note{font-size:12px; color:var(--ink-faint); margin:-8px 0 16px; line-height:1.5;}
+  .auth-error{color:var(--coral); font-size:12.5px; margin:-6px 0 12px;}
+  .gaccount-list{display:flex; flex-direction:column; gap:8px;}
+  .gaccount-row{display:flex; align-items:center; gap:12px; width:100%; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:8px; padding:10px 12px; text-align:left;}
+  .gaccount-row:hover{border-color:var(--teal);}
+  .gaccount-avatar{width:32px;height:32px;border-radius:50%; background:var(--teal); color:#0E211E; display:flex;align-items:center;justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;}
+  .gaccount-row .gname{font-size:13.5px; font-weight:600;}
+  .gaccount-row .gemail{font-size:12px; color:var(--ink-faint);}
+
+  .view{display:none; animation:fade .35s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    padding:96px 32px 90px;
+    background:
+      radial-gradient(circle at 14% 20%, rgba(232,163,61,0.10), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(111,168,160,0.12), transparent 45%),
+      var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .hero-inner{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;}
+  .kicker{font-family:var(--mono); font-size:12.5px; color:var(--teal); letter-spacing:0.02em; margin-bottom:18px; display:block;}
+  .hero h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(38px,4.6vw,60px);
+    line-height:1.04; margin:0 0 22px; max-width:16ch;
+  }
+  .hero h1 em{font-style:italic; color:var(--amber); font-weight:500;}
+  .hero p.lede{font-size:17.5px; line-height:1.6; color:var(--ink-dim); max-width:46ch; margin:0 0 34px;}
+  .hero-ctas{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{
+    font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:4px; border:1px solid transparent;
+    transition:transform 0.15s, background 0.15s, border-color .15s;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--amber); color:var(--amber-ink);}
+  .btn-primary:hover{background:#F0B255;}
+  .btn-ghost{background:none; border-color:var(--line-strong); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .hero-stats{display:flex; gap:28px; margin-top:38px;}
+  .stat b{display:block; font-family:var(--serif); font-size:26px; font-weight:600;}
+  .stat span{font-size:12.5px; color:var(--ink-faint);}
+
+  /* noticeboard illustration */
+  .board{
+    position:relative; background:#16241B; border:1px solid var(--line);
+    border-radius:6px; padding:26px; min-height:380px;
+  }
+  .board::before{
+    content:""; position:absolute; inset:0; border-radius:6px;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:26px 26px;
+  }
+  .pin-card{
+    position:relative; background:var(--paper); color:#26301F; border-radius:2px;
+    padding:16px 16px 14px; font-size:13.5px; box-shadow:0 10px 22px rgba(0,0,0,0.35);
+    margin-bottom:16px;
+  }
+  .pin-card:nth-child(1){transform:rotate(-2.5deg); width:82%;}
+  .pin-card:nth-child(2){transform:rotate(1.8deg); width:92%; margin-left:auto;}
+  .pin-card:nth-child(3){transform:rotate(-1.2deg); width:70%;}
+  .pin-card .code{font-family:var(--mono); font-weight:700; font-size:11.5px; background:#26301F; color:var(--paper); padding:2px 7px; border-radius:2px; display:inline-block; margin-bottom:8px;}
+  .pin-card .t{font-family:var(--serif); font-weight:600; font-size:15px; margin-bottom:4px;}
+  .pin-card .m{color:#5B6653; font-size:12px;}
+  .pin-dot{position:absolute; top:-6px; left:22px; width:11px; height:11px; border-radius:50%; background:var(--coral); box-shadow:0 2px 3px rgba(0,0,0,0.4);}
+
+  /* ---------- Problem section ---------- */
+  section.pad{padding:80px 32px; max-width:1180px; margin:0 auto;}
+  .section-head{max-width:640px; margin-bottom:44px;}
+  .section-head .kicker{margin-bottom:14px;}
+  .section-head h2{font-family:var(--serif); font-size:clamp(26px,3vw,34px); font-weight:600; line-height:1.2; margin:0 0 14px;}
+  .section-head p{color:var(--ink-dim); font-size:15.5px; line-height:1.6; margin:0;}
+  .problem-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .problem-card{background:var(--bg); padding:30px 26px;}
+  .problem-card .n{font-family:var(--mono); color:var(--coral); font-size:12.5px; margin-bottom:16px;}
+  .problem-card h3{font-family:var(--serif); font-weight:600; font-size:19px; margin:0 0 10px;}
+  .problem-card p{color:var(--ink-dim); font-size:14px; line-height:1.6; margin:0;}
+
+  .feature-row{display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px; align-items:center; padding:56px 0; border-top:1px solid var(--line);}
+  .feature-row:nth-child(even){grid-template-columns:1.15fr 0.85fr;}
+  .feature-row:nth-child(even) .feature-text{order:2;}
+  .feature-text .kicker{margin-bottom:12px;}
+  .feature-text h3{font-family:var(--serif); font-size:26px; font-weight:600; margin:0 0 12px;}
+  .feature-text p{color:var(--ink-dim); font-size:15px; line-height:1.65; margin:0 0 16px; max-width:42ch;}
+  .feature-text ul{margin:0; padding:0; list-style:none;}
+  .feature-text li{font-size:14px; color:var(--ink-dim); padding:7px 0 7px 20px; position:relative; border-top:1px solid var(--line);}
+  .feature-text li:before{content:"→"; position:absolute; left:0; color:var(--teal);}
+  .feature-visual{background:var(--bg-soft); border:1px solid var(--line); border-radius:6px; padding:24px; min-height:220px;}
+
+  footer{border-top:1px solid var(--line); padding:36px 32px; text-align:center; color:var(--ink-faint); font-size:13px;}
+
+  /* ---------- Communities view ---------- */
+  .page-head{padding:44px 32px 0; max-width:1180px; margin:0 auto;}
+  .page-head h2{font-family:var(--serif); font-size:32px; font-weight:600; margin:0 0 8px;}
+  .page-head p{color:var(--ink-dim); font-size:14.5px; margin:0 0 26px;}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:0 32px 30px; max-width:1180px; margin:0 auto;}
+  .search-box{
+    flex:1; min-width:220px; display:flex; align-items:center; gap:8px;
+    background:var(--bg-soft); border:1px solid var(--line-strong); border-radius:6px; padding:11px 14px;
+  }
+  .search-box input{background:none; border:none; color:var(--ink); font-size:14px; width:100%;}
+  .search-box input::placeholder{color:var(--ink-faint);}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{
+    font-size:13px; padding:8px 14px; border-radius:20px; border:1px solid var(--line-strong);
+    background:var(--bg-soft); color:var(--ink-dim); font-weight:500; white-space:nowrap;
+  }
+  .chip.active{background:var(--teal); border-color:var(--teal); color:#0E211E; font-weight:600;}
+
+  .subject-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:16px;
+    padding:0 32px 70px; max-width:1180px; margin:0 auto;
+  }
+  .subject-card{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:6px; padding:20px;
+    display:flex; flex-direction:column; gap:12px; transition:border-color .15s, transform .15s;
+    text-align:left;
+  }
+  .subject-card:hover{border-color:var(--line-strong); transform:translateY(-2px);}
+  .subject-card .code{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--bg); background:var(--amber); padding:3px 8px; border-radius:3px; align-self:flex-start;}
+  .subject-card h4{font-family:var(--serif); font-size:18px; font-weight:600; margin:0;}
+  .subject-card .meta{display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); padding-top:12px;}
+  .subject-card .meta b{color:var(--ink-dim); font-weight:600;}
+
+  /* ---------- Subject detail ---------- */
+  .subject-header{
+    padding:40px 32px 26px; max-width:1180px; margin:0 auto;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap;
+  }
+  .back-link{background:none;border:none;color:var(--ink-faint);font-size:13px;margin-bottom:14px;display:inline-flex;align-items:center;gap:6px;}
+  .back-link:hover{color:var(--ink);}
+  .subject-title-row{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+  .subject-title-row .code{font-family:var(--mono); font-size:13px; font-weight:700; color:var(--bg); background:var(--amber); padding:4px 9px; border-radius:3px;}
+  .subject-title-row h2{font-family:var(--serif); font-size:30px; font-weight:600; margin:0;}
+  .subject-header p{color:var(--ink-dim); font-size:14px; margin:0;}
+  .notes-layout{display:grid; grid-template-columns:1fr; gap:14px; padding:0 32px 80px; max-width:1180px; margin:0 auto;}
+  .note-card{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:6px;
+    padding:18px 20px; display:grid; grid-template-columns:56px 1fr auto; gap:18px; align-items:center;
+  }
+  .upvote{
+    display:flex; flex-direction:column; align-items:center; gap:2px; background:var(--bg-softer);
+    border:1px solid var(--line-strong); border-radius:6px; padding:9px 6px; transition:background .15s, border-color .15s;
+  }
+  .upvote:hover{border-color:var(--teal);}
+  .upvote.voted{background:var(--teal); border-color:var(--teal);}
+  .upvote.voted .arrow, .upvote.voted .count{color:#0E211E;}
+  .upvote .arrow{font-size:13px; line-height:1;}
+  .upvote .count{font-family:var(--mono); font-weight:700; font-size:13px;}
+  .note-main h4{font-family:var(--serif); font-size:17px; font-weight:600; margin:0 0 6px;}
+  .note-tags{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:6px;}
+  .tag{font-size:11px; font-weight:600; padding:3px 8px; border-radius:10px; background:var(--bg-softer); color:var(--ink-dim); border:1px solid var(--line-strong);}
+  .note-meta{font-size:12.5px; color:var(--ink-faint);}
+  .note-actions{display:flex; gap:8px; flex-direction:column;}
+  .btn-sm{font-size:13px; padding:9px 15px; border-radius:5px; white-space:nowrap;}
+
+  .upload-btn{
+    display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600;
+    background:var(--amber); color:var(--amber-ink); padding:11px 18px; border-radius:6px;
+  }
+
+  /* ---------- Nora / AI Study Buddy ---------- */
+  .nora-shell{
+    max-width:1180px; margin:0 auto; padding:44px 32px 90px;
+    display:grid; grid-template-columns:340px 1fr; gap:22px;
+  }
+  .nora-side{background:var(--bg-soft); border:1px solid var(--line); border-radius:8px; padding:22px; align-self:start;}
+  .nora-avatar{width:44px;height:44px;border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--amber)); display:flex;align-items:center;justify-content:center; font-family:var(--serif); font-weight:700; color:#12211A; margin-bottom:14px;}
+  .nora-side h3{font-family:var(--serif); font-size:19px; margin:0 0 6px;}
+  .nora-side p{color:var(--ink-dim); font-size:13.5px; line-height:1.55; margin:0 0 18px;}
+  .note-picker{display:flex; flex-direction:column; gap:8px;}
+  .note-pick{
+    text-align:left; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:6px;
+    padding:11px 12px; font-size:13px; color:var(--ink-dim);
+  }
+  .note-pick.selected{border-color:var(--amber); color:var(--ink); background:rgba(232,163,61,0.08);}
+  .note-pick b{display:block; color:var(--ink); font-size:13.5px; margin-bottom:2px;}
+  .note-pick span{font-family:var(--mono); font-size:11px; color:var(--ink-faint);}
+
+  .nora-main{background:var(--bg-soft); border:1px solid var(--line); border-radius:8px; padding:0; min-height:560px; display:flex; flex-direction:column; overflow:hidden;}
+  .chat-log{flex:1; overflow-y:auto; padding:26px; display:flex; flex-direction:column; gap:14px; min-height:420px; max-height:600px;}
+  .chat-bubble{max-width:80%; padding:12px 16px; border-radius:12px; font-size:14.5px; line-height:1.6;}
+  .chat-bubble.user{align-self:flex-end; background:var(--amber); color:var(--amber-ink); border-bottom-right-radius:2px;}
+  .chat-bubble.assistant{align-self:flex-start; background:var(--bg-softer); color:var(--ink); border:1px solid var(--line); border-bottom-left-radius:2px;}
+  .chat-bubble p{margin:0 0 8px;}
+  .chat-bubble p:last-child{margin-bottom:0;}
+  .chat-bubble ul{margin:6px 0; padding-left:18px;}
+  .chat-bubble li{margin-bottom:4px;}
+  .chat-typing{align-self:flex-start; display:flex; gap:5px; padding:14px 16px; background:var(--bg-softer); border-radius:12px; border:1px solid var(--line);}
+  .chat-input-row{display:flex; gap:10px; padding:16px 20px; border-top:1px solid var(--line); align-items:flex-end;}
+  .chat-input-row textarea{
+    flex:1; resize:none; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:8px;
+    padding:12px 14px; color:var(--ink); font-family:inherit; font-size:14px; max-height:120px; line-height:1.5;
+  }
+  .chat-input-row textarea:focus-visible{outline:2px solid var(--amber); outline-offset:1px;}
+  .prompt-chip{width:100%; text-align:left; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:6px; padding:11px 12px; font-size:13px; color:var(--ink-dim); margin-bottom:8px;}
+  .prompt-chip:hover{border-color:var(--teal); color:var(--ink);}
+  .ai-note{font-size:12px; color:var(--ink-faint); line-height:1.5; margin-top:14px; padding-top:14px; border-top:1px solid var(--line);}
+  .dot{width:7px;height:7px;border-radius:50%; background:var(--amber); animation:pulse 1s infinite ease-in-out;}
+  .dot:nth-child(2){animation-delay:.15s;} .dot:nth-child(3){animation-delay:.3s;}
+  @keyframes pulse{0%,80%,100%{opacity:.25; transform:scale(0.8);} 40%{opacity:1; transform:scale(1);}}
+
+  .summary-block p{font-size:15px; line-height:1.7; color:var(--ink); margin:0 0 14px;}
+  .summary-block ul{margin:0; padding-left:20px;}
+  .summary-block li{font-size:14.5px; line-height:1.7; color:var(--ink-dim); margin-bottom:6px;}
+
+  .flash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px;}
+  .flashcard{
+    width:100%; max-width:480px; min-height:180px; background:var(--paper); color:#26301F; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:30px;
+    font-family:var(--serif); font-size:19px; font-weight:500; line-height:1.4; cursor:pointer;
+    box-shadow:0 12px 26px rgba(0,0,0,0.28); position:relative;
+  }
+  .flashcard .side-label{position:absolute; top:12px; left:16px; font-family:var(--mono); font-size:10px; color:#8B9682; font-weight:700;}
+  .flash-controls{display:flex; align-items:center; gap:16px;}
+  .flash-controls span{font-family:var(--mono); font-size:12.5px; color:var(--ink-faint);}
+  .icon-btn{background:var(--bg-softer); border:1px solid var(--line-strong); width:36px;height:36px; border-radius:50%; display:flex;align-items:center;justify-content:center; color:var(--ink);}
+  .icon-btn:hover{border-color:var(--teal);}
+
+  .quiz-q{margin-bottom:22px;}
+  .quiz-q p{font-size:15px; font-weight:600; margin:0 0 12px;}
+  .quiz-opts{display:flex; flex-direction:column; gap:8px;}
+  .quiz-opt{text-align:left; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:6px; padding:11px 14px; font-size:13.5px; color:var(--ink);}
+  .quiz-opt.correct{border-color:var(--teal); background:rgba(111,168,160,0.15);}
+  .quiz-opt.wrong{border-color:var(--coral); background:rgba(232,108,86,0.14);}
+
+  /* ---------- Calendar ---------- */
+  .cal-shell{max-width:1180px; margin:0 auto; padding:44px 32px 90px; display:grid; grid-template-columns:1fr 320px; gap:24px;}
+  .cal-grid-wrap{background:var(--bg-soft); border:1px solid var(--line); border-radius:8px; padding:22px;}
+  .cal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .cal-head h3{font-family:var(--serif); font-size:20px; margin:0;}
+  .cal-nav{display:flex; gap:6px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px;}
+  .cal-dow{font-size:11px; color:var(--ink-faint); text-align:center; padding-bottom:6px; font-weight:600;}
+  .cal-day{
+    aspect-ratio:1; border-radius:6px; background:var(--bg-softer); border:1px solid transparent;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:6px 4px;
+    font-size:12.5px; color:var(--ink-dim); position:relative;
+  }
+  .cal-day.empty{background:none;}
+  .cal-day.today{border-color:var(--amber); color:var(--ink); font-weight:700;}
+  .cal-day .dmark{width:5px;height:5px;border-radius:50%; background:var(--coral); margin-top:4px;}
+  .deadline-list{display:flex; flex-direction:column; gap:10px;}
+  .deadline-card{
+    background:var(--bg-soft); border:1px solid var(--line); border-left:3px solid var(--coral);
+    border-radius:0 6px 6px 0; padding:13px 15px;
+  }
+  .deadline-card.exam{border-left-color:var(--amber);}
+  .deadline-card .dl-date{font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-bottom:4px;}
+  .deadline-card h5{font-family:var(--serif); font-size:14.5px; margin:0 0 3px; font-weight:600;}
+  .deadline-card span.subj{font-size:11.5px; color:var(--ink-faint);}
+  .add-deadline{width:100%; margin-top:4px;}
+  .side-title{font-family:var(--serif); font-size:16px; margin:0 0 14px;}
+
+  /* modal */
+  .modal-backdrop{position:fixed; inset:0; background:rgba(10,15,11,0.65); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+  .modal-backdrop.show{display:flex;}
+  .modal{background:var(--bg-soft); border:1px solid var(--line-strong); border-radius:10px; padding:26px; width:100%; max-width:420px;}
+  .modal h4{font-family:var(--serif); font-size:20px; margin:0 0 16px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; color:var(--ink-faint); margin-bottom:6px; font-weight:600;}
+  .field input, .field select{
+    width:100%; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:6px;
+    padding:10px 12px; color:var(--ink); font-size:14px; font-family:inherit;
+  }
+  .modal-actions{display:flex; gap:10px; margin-top:18px; justify-content:flex-end;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:var(--paper); color:#232C1D; padding:12px 20px; border-radius:6px; font-size:13.5px; font-weight:600;
+    box-shadow:0 10px 24px rgba(0,0,0,0.35); z-index:200; transition:all .25s ease; pointer-events:none;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:880px){
+    .hero-inner{grid-template-columns:1fr;}
+    .board{order:-1;}
+    .problem-grid{grid-template-columns:1fr;}
+    .feature-row, .feature-row:nth-child(even){grid-template-columns:1fr;}
+    .feature-row:nth-child(even) .feature-text{order:0;}
+    .nora-shell, .cal-shell{grid-template-columns:1fr;}
+    .note-card{grid-template-columns:44px 1fr; grid-template-rows:auto auto;}
+    .note-actions{grid-column:1/-1; flex-direction:row;}
+    .topbar{padding:14px 16px;}
+    .nav-links{display:none;}
+    section.pad, .page-head, .toolbar, .subject-grid, .subject-header, .notes-layout{padding-left:18px; padding-right:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-mark">L</span>Learnora</div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-view="home">Home</button>
+    <button class="nav-btn" data-view="communities">Communities</button>
+    <button class="nav-btn" data-view="nora">Nora AI</button>
+    <button class="nav-btn" data-view="calendar">Deadlines</button>
+  </div>
+  <div class="topbar-right">
+    <div class="auth-area" id="authArea"></div>
+  </div>
+</div>
+
+<!-- ===================== HOME ===================== -->
+<div class="view active" id="view-home">
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="kicker">// notes, sorted by subject code</span>
+        <h1>Every note your batch has ever needed, <em>finally in one place.</em></h1>
+        <p class="lede">Stop scrolling five WhatsApp groups for last sem's chemistry notes. Learnora organizes every upload by subject code, turns any note into a summary or quiz on demand, and keeps your deadlines where your notes are.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" data-view="communities">Browse your subjects</button>
+          <button class="btn btn-ghost" data-view="nora">Try Nora, the AI study buddy</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b id="statNotes">–</b><span>notes shared</span></div>
+          <div class="stat"><b id="statSubjects">–</b><span>subject communities</span></div>
+        </div>
+      </div>
+      <div class="board">
+        <div class="pin-card"><span class="pin-dot"></span><span class="code">BACHY101</span><div class="t">Organic Chemistry — Unit 3 full notes</div><div class="m">↑ 128 · Priya S.</div></div>
+        <div class="pin-card"><span class="pin-dot"></span><span class="code">ECO204</span><div class="t">Macroeconomics midterm revision pack</div><div class="m">↑ 96 · Rohit K.</div></div>
+        <div class="pin-card"><span class="pin-dot"></span><span class="code">CSIT301</span><div class="t">Data Structures — recursion cheatsheet</div><div class="m">↑ 74 · Ayesha M.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="pad">
+    <div class="section-head">
+      <span class="kicker">// the problem</span>
+      <h2>Notes, revision, and deadlines all live in different, unreliable places.</h2>
+      <p>Most students patch together their whole academic term from scattered chats and screenshots — and none of it is searchable when the exam is tomorrow.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="n">01 · discovery</div>
+        <h3>Finding the right notes is a scavenger hunt</h3>
+        <p>No way to filter by subject code or quality — just scrolling chat history and hoping someone shared the right file.</p>
+      </div>
+      <div class="problem-card">
+        <div class="n">02 · consumption</div>
+        <h3>Turning notes into revision material is manual</h3>
+        <p>Making summaries, flashcards, or practice questions from a 40-page PDF the night before an exam eats the time you don't have.</p>
+      </div>
+      <div class="problem-card">
+        <div class="n">03 · deadlines</div>
+        <h3>Deadlines live nowhere near the material</h3>
+        <p>Sticky notes and memory track submissions and exam dates, disconnected from the notes you'd actually study from.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pad" style="padding-top:0;">
+    <div class="feature-row">
+      <div class="feature-text">
+        <span class="kicker">// subject communities</span>
+        <h3>Every subject code is its own community</h3>
+        <p>Search BACHY101 or ECO204 and land straight in that subject's shared notes — ranked by upvotes.</p>
+        <ul>
+          <li>Filter by subject code or note type</li>
+          <li>Upvotes surface the notes that actually helped people</li>
+          <li>Class reps can pin the canonical set for the term</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="chip-row" style="margin-bottom:16px;">
+          <span class="chip active">All subjects</span><span class="chip">Chemistry</span><span class="chip">Economics</span><span class="chip">CS</span>
+        </div>
+        <div class="subject-card" style="margin-bottom:10px;">
+          <span class="code">BACHY101</span>
+          <h4>Organic Chemistry I</h4>
+          <div class="meta"><span>34 notes</span><span><b>Chemistry</b></span></div>
+        </div>
+        <div class="subject-card">
+          <span class="code">CSIT301</span>
+          <h4>Data Structures</h4>
+          <div class="meta"><span>51 notes</span><span><b>CS</b></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-text">
+        <span class="kicker">// Nora, the AI study buddy</span>
+        <h3>Any note becomes a summary, flashcard set, or quiz</h3>
+        <p>Pick a note and ask Nora to condense it, drill it, or test you — no manual rewriting required.</p>
+        <ul>
+          <li>Concise summaries for a fast re-read before class</li>
+          <li>Flip-through flashcards for active recall</li>
+          <li>Auto-generated quizzes to check what's actually stuck</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="mode-tabs" style="margin-bottom:16px;">
+          <span class="mode-tab active">Summary</span><span class="mode-tab">Flashcards</span><span class="mode-tab">Quiz</span>
+        </div>
+        <p style="font-size:14px; color:var(--ink-dim); line-height:1.7; margin:0;">"Unit 3 covers nucleophilic substitution — SN1 vs SN2 mechanisms, the role of leaving groups, and how solvent polarity flips which pathway dominates..."</p>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-text">
+        <span class="kicker">// deadlines</span>
+        <h3>One calendar for assignments, submissions, and exams</h3>
+        <p>Deadlines sit next to the subject they belong to, so opening a note's community also shows what's due for it.</p>
+        <ul>
+          <li>Month view with every deadline marked</li>
+          <li>Add a deadline in seconds, tagged to a subject</li>
+          <li>Exams and assignments visually distinct at a glance</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="deadline-card exam"><div class="dl-date">SEP 18</div><h5>Organic Chemistry — Midterm</h5><span class="subj">BACHY101</span></div>
+        <div style="height:10px;"></div>
+        <div class="deadline-card"><div class="dl-date">SEP 22</div><h5>DSA Assignment 4 due</h5><span class="subj">CSIT301</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Learnora — a notes &amp; study platform, prototype build. Notes, upvotes, and deadlines are saved to a shared database and visible to everyone who opens this page.</footer>
+</div>
+
+<!-- ===================== COMMUNITIES ===================== -->
+<div class="view" id="view-communities">
+  <div class="page-head">
+    <h2>Subject communities</h2>
+    <p>Every subject, organized by code — ranked by community upvotes.</p>
+  </div>
+  <div class="toolbar">
+    <div class="search-box">🔎 <input type="text" id="subjSearch" placeholder="Search by subject name or code, e.g. BACHY101"></div>
+    <button class="upload-btn" id="addSubjectBtn">＋ Add subject</button>
+  </div>
+  <div class="toolbar" style="padding-top:0;">
+    <div class="chip-row" id="deptChips"></div>
+  </div>
+  <div class="subject-grid" id="subjectGrid"></div>
+</div>
+
+<!-- ===================== SUBJECT DETAIL ===================== -->
+<div class="view" id="view-subject">
+  <div class="subject-header">
+    <div>
+      <button class="back-link" data-view="communities">← All subjects</button>
+      <div class="subject-title-row"><span class="code" id="subjCode">BACHY101</span><h2 id="subjName">Organic Chemistry I</h2></div>
+      <p id="subjSub">Loading…</p>
+    </div>
+    <button class="upload-btn" id="uploadBtn">＋ Upload a note</button>
+  </div>
+  <div class="notes-layout" id="notesLayout"></div>
+</div>
+
+<!-- ===================== NORA ===================== -->
+<div class="view" id="view-nora">
+  <div class="page-head">
+    <h2>Nora, your AI study buddy</h2>
+    <p>A real chatbot — ask Nora to explain something, summarize a topic, build flashcards, quiz you, or help you plan revision.</p>
+  </div>
+  <div class="nora-shell">
+    <div class="nora-side">
+      <div class="nora-avatar">N</div>
+      <h3>Nora</h3>
+      <p>Try one of these, or just type your own question below.</p>
+      <div id="promptChips"></div>
+      <p class="ai-note">Nora is connected to a real Claude model. Responses are generated live and can occasionally be wrong — double-check anything exam-critical.</p>
+    </div>
+    <div class="nora-main">
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chat-input-row">
+        <textarea id="chatInput" placeholder="Ask Nora anything…" rows="1"></textarea>
+        <button class="btn btn-primary btn-sm" id="chatSend">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CALENDAR ===================== -->
+<div class="view" id="view-calendar">
+  <div class="page-head">
+    <h2>Deadlines</h2>
+    <p>Every assignment, submission, and exam across your subjects — one place, not five.</p>
+  </div>
+  <div class="cal-shell">
+    <div class="cal-grid-wrap">
+      <div class="cal-head">
+        <h3 id="calMonthLabel">September 2026</h3>
+        <div class="cal-nav">
+          <button class="icon-btn" id="calPrev">‹</button>
+          <button class="icon-btn" id="calNext">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div>
+      <h4 class="side-title">Upcoming</h4>
+      <div class="deadline-list" id="deadlineList"></div>
+      <button class="btn btn-primary add-deadline" id="addDeadlineBtn">＋ Add a deadline</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: add deadline ===================== -->
+<div class="modal-backdrop" id="deadlineModal">
+  <div class="modal">
+    <h4>Add a deadline</h4>
+    <div class="field"><label>Title</label><input type="text" id="dlTitle" placeholder="e.g. Assignment 3 submission"></div>
+    <div class="field"><label>Subject</label><select id="dlSubject"></select></div>
+    <div class="field"><label>Type</label><select id="dlType"><option value="assignment">Assignment</option><option value="exam">Exam</option></select></div>
+    <div class="field"><label>Date</label><input type="date" id="dlDate"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="dlCancel">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="dlSave">Save deadline</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: upload note ===================== -->
+<div class="modal-backdrop" id="uploadModal">
+  <div class="modal">
+    <h4>Upload a note</h4>
+    <div class="field"><label>Note title</label><input type="text" id="upTitle" placeholder="e.g. Unit 4 — full revision notes"></div>
+    <div class="field"><label>Type</label><select id="upType"><option>Full Notes</option><option>Summary</option><option>Practice Questions</option><option>Past Paper</option></select></div>
+    <div class="field">
+      <label>Document</label>
+      <input type="file" id="upFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.png,.jpg,.jpeg,.webp">
+      <p class="auth-note" id="upFileHint">PDF, Word, PowerPoint, text, or image — up to 25MB.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="upCancel">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="upSave">Upload</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: add subject ===================== -->
+<div class="modal-backdrop" id="subjectModal">
+  <div class="modal">
+    <h4>Add a subject</h4>
+    <div class="field"><label>Course code</label><input type="text" id="subCode" placeholder="e.g. CSIT301"></div>
+    <div class="field"><label>Course name</label><input type="text" id="subName" placeholder="e.g. Data Structures"></div>
+    <div class="field"><label>Department</label><input type="text" id="subDept" placeholder="e.g. Computer Science"></div>
+    <div class="field"><label>Summary for Nora (optional)</label><textarea id="subContent" rows="3" placeholder="A short summary of what this course covers — Nora uses this as study context." style="width:100%; resize:vertical; background:var(--bg-softer); border:1px solid var(--line-strong); border-radius:6px; color:var(--ink); font-family:inherit; font-size:13.5px; padding:10px;"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="subCancel">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="subSave">Add subject</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: sign in / register ===================== -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal" id="authModalInner"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- Backend API client ---------------- */
+async function api(path, opts={}){
+  const res = await fetch(path, {
+    credentials: "include",
+    headers: opts.body ? {"Content-Type":"application/json"} : undefined,
+    ...opts
+  });
+  let data = null;
+  try{ data = await res.json(); }catch(e){}
+  if(!res.ok){
+    throw new Error((data && data.error) || res.statusText || "Request failed");
+  }
+  return data;
+}
+
+let subjects = [];
+let notesBySubject = {};
+let deadlines = [];
+let currentSubject = null;
+let calMonth = 8; // 0-indexed, September
+let calYear = 2026;
+
+/* ---------------- Data loaders (backed by the real backend, not window.storage) ----------------
+   notes/deadlines are shared across everyone (stored server-side); who
+   *this signed-in user* has upvoted comes from their own session. */
+const loadedSubjectNotes = new Set();
+let myVotes = [];
+let deadlinesLoaded = false;
+
+async function loadSubjects(){
+  subjects = await api("/api/subjects");
+  currentSubject = subjects[0] || null;
+}
+async function ensureNotesLoaded(code){
+  if(loadedSubjectNotes.has(code)) return;
+  notesBySubject[code] = await api(`/api/notes/${encodeURIComponent(code)}`);
+  loadedSubjectNotes.add(code);
+}
+async function ensureVotesLoaded(){
+  if(!currentUser){ myVotes = []; return; }
+  try{ myVotes = await api("/api/myvotes"); }catch(e){ myVotes = []; }
+}
+async function ensureDeadlinesLoaded(){
+  if(deadlinesLoaded) return;
+  deadlines = await api("/api/deadlines");
+  deadlinesLoaded = true;
+}
+async function loadStats(){
+  try{
+    const stats = await api("/api/stats");
+    document.getElementById("statNotes").textContent = stats.notes.toLocaleString();
+    document.getElementById("statSubjects").textContent = stats.subjects.toLocaleString();
+  }catch(e){
+    document.getElementById("statNotes").textContent = "0";
+    document.getElementById("statSubjects").textContent = "0";
+  }
+}
+
+/* ---------------- Auth (real backend session — Google OAuth or email/password) ---------------- */
+let currentUser = null;
+let authMode = "signin";
+let authError = "";
+
+async function restoreSession(){
+  try{
+    const {user} = await api("/api/me");
+    currentUser = user;
+  }catch(e){ currentUser = null; }
+  renderAuthArea();
+}
+
+function renderAuthArea(){
+  const area = document.getElementById("authArea");
+  if(currentUser){
+    area.innerHTML = `
+      <div class="user-chip" id="userChip">
+        <div class="user-avatar">${currentUser.name.trim()[0].toUpperCase()}</div>
+        <span style="font-size:13px; font-weight:600;">${currentUser.name.split(" ")[0]}</span>
+        <div class="user-dropdown" id="userDropdown"><button id="signOutBtn">Sign out</button></div>
+      </div>`;
+    document.getElementById("userChip").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      document.getElementById("userDropdown").classList.toggle("show");
+    });
+    document.getElementById("signOutBtn").addEventListener("click", async (e)=>{
+      e.stopPropagation();
+      try{ await api("/auth/logout", {method:"POST"}); }catch(e){}
+      currentUser = null;
+      myVotes = [];
+      renderAuthArea();
+      showToast("Signed out");
+    });
+  } else {
+    area.innerHTML = `<button class="btn btn-ghost btn-sm" id="signInBtn">Sign in</button>`;
+    document.getElementById("signInBtn").addEventListener("click", ()=> openAuthModal());
+  }
+}
+document.addEventListener("click", ()=>{
+  const dd = document.getElementById("userDropdown");
+  if(dd) dd.classList.remove("show");
+});
+
+function openAuthModal(reason){
+  authError = ""; authMode = "signin";
+  renderAuthModal();
+  document.getElementById("authModal").classList.add("show");
+  if(reason) showToast(reason);
+}
+function closeAuthModal(){ document.getElementById("authModal").classList.remove("show"); }
+
+function renderAuthModal(){
+  const wrap = document.getElementById("authModalInner");
+  wrap.innerHTML = `
+    <h4>${authMode==="signin" ? "Sign in to Learnora" : "Create your account"}</h4>
+    <button class="google-btn" id="googleBtn"><span class="google-g">G</span> Continue with Google</button>
+    <div class="auth-divider">or</div>
+    <div class="auth-tabs">
+      <button class="auth-tab ${authMode==='signin'?'active':''}" data-mode="signin">Sign in</button>
+      <button class="auth-tab ${authMode==='register'?'active':''}" data-mode="register">Register</button>
+    </div>
+    ${authError ? `<div class="auth-error">${authError}</div>` : ""}
+    ${authMode==="register" ? `<div class="field"><label>Name</label><input type="text" id="authName" placeholder="e.g. Priya Sharma"></div>` : ""}
+    <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="you@example.edu"></div>
+    <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="authCancel">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="authSubmit">${authMode==="signin" ? "Sign in" : "Register"}</button>
+    </div>`;
+  document.getElementById("googleBtn").addEventListener("click", ()=>{
+    // Real OAuth: full-page redirect to our backend, which redirects to
+    // accounts.google.com. The backend sends the browser back here once
+    // Google confirms the account, and restoreSession() picks it up.
+    window.location.href = "/auth/google";
+  });
+  wrap.querySelectorAll(".auth-tab").forEach(t=> t.addEventListener("click", ()=>{ authMode=t.dataset.mode; authError=""; renderAuthModal(); }));
+  document.getElementById("authCancel").addEventListener("click", closeAuthModal);
+  document.getElementById("authSubmit").addEventListener("click", handleAuthSubmit);
+}
+
+async function handleAuthSubmit(){
+  const email = (document.getElementById("authEmail").value||"").trim().toLowerCase();
+  const password = document.getElementById("authPassword").value||"";
+  if(!email || !email.includes("@") || !password){
+    authError = "Enter a valid email and password."; renderAuthModal(); return;
+  }
+  const submitBtn = document.getElementById("authSubmit");
+  submitBtn.disabled = true;
+  try{
+    let result;
+    if(authMode==="register"){
+      const name = (document.getElementById("authName").value||"").trim();
+      if(!name){ authError = "Enter your name."; submitBtn.disabled=false; renderAuthModal(); return; }
+      result = await api("/auth/register", {method:"POST", body: JSON.stringify({name, email, password})});
+    } else {
+      result = await api("/auth/login", {method:"POST", body: JSON.stringify({email, password})});
+    }
+    currentUser = result.user;
+    closeAuthModal();
+    renderAuthArea();
+    showToast("Signed in as " + currentUser.name);
+  }catch(err){
+    authError = err.message || "Something went wrong."; renderAuthModal();
+  }finally{
+    submitBtn.disabled = false;
+  }
+}
+
+/* ---------------- Nav ---------------- */
+document.querySelectorAll("[data-view]").forEach(el=>{
+  el.addEventListener("click", ()=> showView(el.dataset.view));
+});
+function showView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+name).classList.add("active");
+  document.querySelectorAll(".nav-btn[data-view]").forEach(b=>{
+    b.classList.toggle("active", b.dataset.view===name);
+  });
+  window.scrollTo({top:0, behavior:"instant"});
+  if(name==="communities") renderSubjectGrid();
+  if(name==="nora"){
+    ensureGreeting();
+  }
+  if(name==="calendar"){
+    document.getElementById("deadlineList").innerHTML = '<p style="color:var(--ink-faint); font-size:13px;">Loading deadlines…</p>';
+    ensureDeadlinesLoaded().then(()=>{ renderCalendar(); renderDeadlineList(); });
+  }
+}
+
+
+/* ---------------- Communities ---------------- */
+let depts = ["All"];
+let activeDept = "All";
+function renderDeptChips(){
+  const wrap = document.getElementById("deptChips");
+  wrap.innerHTML = "";
+  depts.forEach(d=>{
+    const c = document.createElement("button");
+    c.className = "chip" + (d===activeDept ? " active":"");
+    c.textContent = d;
+    c.addEventListener("click", ()=>{ activeDept=d; renderDeptChips(); renderSubjectGrid(); });
+    wrap.appendChild(c);
+  });
+}
+
+function renderSubjectGrid(){
+  const q = (document.getElementById("subjSearch").value || "").toLowerCase();
+  const grid = document.getElementById("subjectGrid");
+  grid.innerHTML = "";
+  if(subjects.length===0){
+    grid.innerHTML = '<p style="color:var(--ink-faint); font-size:14px;">No subjects yet — add the first one to get started.</p>';
+    return;
+  }
+  const filtered = subjects.filter(s=>{
+    const matchesDept = activeDept==="All" || s.dept===activeDept;
+    const matchesQ = !q || s.code.toLowerCase().includes(q) || s.name.toLowerCase().includes(q);
+    return matchesDept && matchesQ;
+  });
+  if(filtered.length===0){
+    grid.innerHTML = '<p style="color:var(--ink-faint); font-size:14px;">No subjects match that search yet — try a different code or name.</p>';
+    return;
+  }
+  filtered.forEach(s=>{
+    const card = document.createElement("button");
+    card.className = "subject-card";
+    card.innerHTML = `<span class="code">${s.code}</span><h4>${s.name}</h4>
+      <div class="meta"><span>${s.notes} notes</span><b>${s.dept}</b></div>`;
+    card.addEventListener("click", ()=> openSubject(s));
+    grid.appendChild(card);
+  });
+}
+document.getElementById("subjSearch").addEventListener("input", renderSubjectGrid);
+
+document.getElementById("addSubjectBtn").addEventListener("click", ()=>{
+  if(!currentUser){ openAuthModal("Sign in to add a subject"); return; }
+  document.getElementById("subjectModal").classList.add("show");
+});
+document.getElementById("subCancel").addEventListener("click", ()=> document.getElementById("subjectModal").classList.remove("show"));
+document.getElementById("subSave").addEventListener("click", async ()=>{
+  if(!currentUser){ openAuthModal("Sign in to add a subject"); return; }
+  const code = document.getElementById("subCode").value.trim();
+  const name = document.getElementById("subName").value.trim();
+  const dept = document.getElementById("subDept").value.trim();
+  const content = document.getElementById("subContent").value.trim();
+  if(!code || !name || !dept){ showToast("Fill in course code, name, and department"); return; }
+  const saveBtn = document.getElementById("subSave");
+  saveBtn.disabled = true; saveBtn.textContent = "Adding…";
+  try{
+    const subject = await api("/api/subjects", {method:"POST", body: JSON.stringify({code, name, dept, content})});
+    subjects.push(subject);
+    notesBySubject[subject.code] = [];
+    depts = ["All", ...new Set(subjects.map(s=>s.dept))];
+    renderDeptChips();
+    renderSubjectGrid();
+    populateSubjectSelect();
+    loadStats();
+    document.getElementById("subCode").value = "";
+    document.getElementById("subName").value = "";
+    document.getElementById("subDept").value = "";
+    document.getElementById("subContent").value = "";
+    document.getElementById("subjectModal").classList.remove("show");
+    showToast(subject.code + " added");
+  }catch(e){
+    showToast(e.message || "Could not add subject");
+  }
+  saveBtn.disabled = false; saveBtn.textContent = "Add subject";
+});
+
+async function openSubject(s){
+  currentSubject = s;
+  document.getElementById("subjCode").textContent = s.code;
+  document.getElementById("subjName").textContent = s.name;
+  document.getElementById("subjSub").textContent = `${s.notes} notes shared · ${s.dept}`;
+  document.getElementById("notesLayout").innerHTML = '<p style="color:var(--ink-faint); font-size:14px;">Loading notes from the database…</p>';
+  showView("subject");
+  await Promise.all([ensureNotesLoaded(s.code), ensureVotesLoaded()]);
+  renderNotes();
+}
+
+function renderNotes(){
+  const layout = document.getElementById("notesLayout");
+  layout.innerHTML = "";
+  const list = notesBySubject[currentSubject.code] || [];
+  list.forEach((n, i)=>{
+    const el = document.createElement("div");
+    el.className = "note-card";
+    const isVoted = myVotes && myVotes.includes(n.id);
+    el.innerHTML = `
+      <button class="upvote${isVoted ? " voted":""}" data-i="${i}">
+        <span class="arrow">▲</span><span class="count">${n.votes}</span>
+      </button>
+      <div class="note-main">
+        <h4>${n.title}</h4>
+        <div class="note-tags"><span class="tag">${n.type}</span></div>
+        <div class="note-meta">${n.author} · ${n.date}${n.fileName ? ` · ${n.fileName}` : ""}</div>
+      </div>
+      <div class="note-actions">
+        <button class="btn btn-primary btn-sm" data-study="${i}">Study with Nora</button>
+        ${n.fileUrl ? `<a class="btn btn-ghost btn-sm" href="${n.fileUrl}" target="_blank" rel="noopener">Preview</a>` : `<button class="btn btn-ghost btn-sm" disabled>Preview</button>`}
+      </div>`;
+    layout.appendChild(el);
+  });
+  layout.querySelectorAll(".upvote").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      if(!currentUser){ openAuthModal("Sign in to upvote notes"); return; }
+      const i = +btn.dataset.i;
+      const n = notesBySubject[currentSubject.code][i];
+      btn.disabled = true;
+      try{
+        const {note, voted} = await api(`/api/notes/${encodeURIComponent(currentSubject.code)}/${encodeURIComponent(n.id)}/upvote`, {method:"POST"});
+        n.votes = note.votes;
+        btn.querySelector(".count").textContent = n.votes;
+        btn.classList.toggle("voted", voted);
+        myVotes = voted ? [...myVotes, n.id] : myVotes.filter(id=>id!==n.id);
+      }catch(e){
+        showToast("Vote failed — try again");
+      }
+      btn.disabled = false;
+    });
+  });
+  layout.querySelectorAll("[data-study]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const note = notesBySubject[currentSubject.code][+btn.dataset.study];
+      showView("nora");
+      ensureGreeting();
+      sendMessage(`I'm studying "${note.title}" for ${currentSubject.code} (${currentSubject.name}). Here's the material:\n\n${currentSubject.content}\n\nCan you summarize the key points, then quiz me on it?`);
+    });
+  });
+}
+
+document.getElementById("uploadBtn").addEventListener("click", ()=>{
+  if(!currentUser){ openAuthModal("Sign in to upload notes"); return; }
+  document.getElementById("uploadModal").classList.add("show");
+});
+document.getElementById("upCancel").addEventListener("click", ()=> document.getElementById("uploadModal").classList.remove("show"));
+document.getElementById("upSave").addEventListener("click", async ()=>{
+  if(!currentUser){ openAuthModal("Sign in to upload notes"); return; }
+  const title = document.getElementById("upTitle").value.trim();
+  const type = document.getElementById("upType").value;
+  const fileInput = document.getElementById("upFile");
+  const file = fileInput.files[0];
+  if(!title){ showToast("Give the note a title first"); return; }
+  if(!file){ showToast("Choose a document to upload"); return; }
+  const saveBtn = document.getElementById("upSave");
+  saveBtn.disabled = true; saveBtn.textContent = "Uploading…";
+  try{
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("type", type);
+    formData.append("file", file);
+    const res = await fetch(`/api/notes/${encodeURIComponent(currentSubject.code)}`, {
+      method: "POST",
+      credentials: "include",
+      body: formData
+    });
+    const note = await res.json();
+    if(!res.ok) throw new Error(note.error || "Upload failed");
+    notesBySubject[currentSubject.code].unshift(note);
+    currentSubject.notes++;
+    showToast("Note uploaded to " + currentSubject.code);
+    loadStats();
+    document.getElementById("upTitle").value = "";
+    fileInput.value = "";
+    document.getElementById("uploadModal").classList.remove("show");
+    renderNotes();
+  }catch(e){
+    showToast(e.message || "Upload failed — try again");
+  }
+  saveBtn.disabled = false; saveBtn.textContent = "Upload";
+});
+
+/* ---------------- Nora chatbot (live Claude API) ---------------- */
+let chatHistory = [];
+let chatBusy = false;
+
+function renderPromptChips(){
+  const wrap = document.getElementById("promptChips");
+  const chips = [
+    "Explain SN1 vs SN2 reactions simply",
+    "Make 5 flashcards on macroeconomics",
+    "Quiz me on recursion basics",
+    "Help me plan tonight's revision"
+  ];
+  wrap.innerHTML = "";
+  chips.forEach(c=>{
+    const b = document.createElement("button");
+    b.className = "prompt-chip";
+    b.textContent = c;
+    b.addEventListener("click", ()=> sendMessage(c));
+    wrap.appendChild(b);
+  });
+}
+renderPromptChips();
+
+function addBubble(role, html){
+  const log = document.getElementById("chatLog");
+  const b = document.createElement("div");
+  b.className = "chat-bubble " + role;
+  b.innerHTML = html;
+  log.appendChild(b);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+function mdLite(text){
+  let t = String(text).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const lines = t.split("\n");
+  let html = ""; let inList = false;
+  lines.forEach(line=>{
+    const trimmed = line.trim();
+    if(/^[-*]\s+/.test(trimmed)){
+      if(!inList){ html += "<ul>"; inList = true; }
+      html += `<li>${trimmed.replace(/^[-*]\s+/,"")}</li>`;
+    } else {
+      if(inList){ html += "</ul>"; inList = false; }
+      if(trimmed) html += `<p>${trimmed}</p>`;
+    }
+  });
+  if(inList) html += "</ul>";
+  return html || `<p>${t}</p>`;
+}
+
+function ensureGreeting(){
+  const log = document.getElementById("chatLog");
+  if(log.children.length===0){
+    addBubble("assistant", mdLite("Hi, I'm Nora! Ask me to explain a concept, summarize a topic, build flashcards, or quiz you — on anything you're studying."));
+  }
+}
+
+async function sendMessage(presetText){
+  const input = document.getElementById("chatInput");
+  const text = (presetText!==undefined ? presetText : input.value).trim();
+  if(!text || chatBusy) return;
+  if(presetText===undefined) input.value = "";
+  input.style.height = "auto";
+  addBubble("user", mdLite(text));
+  chatHistory.push({role:"user", content:text});
+  chatBusy = true;
+  document.getElementById("chatSend").disabled = true;
+  const typing = document.createElement("div");
+  typing.className = "chat-typing";
+  typing.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+  const log = document.getElementById("chatLog");
+  log.appendChild(typing);
+  log.scrollTop = log.scrollHeight;
+  try{
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: chatHistory })
+    });
+    const data = await response.json();
+    typing.remove();
+    if(!response.ok) throw new Error(data.error || "Nora couldn't respond");
+    const reply = data.reply || "Sorry, I couldn't generate a response just now — try asking again.";
+    addBubble("assistant", mdLite(reply));
+    chatHistory.push({role:"assistant", content:reply});
+  }catch(e){
+    typing.remove();
+    addBubble("assistant", mdLite(e.message && e.message !== "Nora couldn't respond" ? e.message : "I couldn't connect just now — mind trying again in a moment?"));
+  }
+  chatBusy = false;
+  document.getElementById("chatSend").disabled = false;
+}
+
+document.getElementById("chatSend").addEventListener("click", ()=> sendMessage());
+document.getElementById("chatInput").addEventListener("keydown", (e)=>{
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendMessage(); }
+});
+document.getElementById("chatInput").addEventListener("input", (e)=>{
+  e.target.style.height = "auto";
+  e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+});
+
+/* ---------------- Calendar ---------------- */
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function renderCalendar(){
+  document.getElementById("calMonthLabel").textContent = monthNames[calMonth] + " " + calYear;
+  const grid = document.getElementById("calGrid");
+  grid.innerHTML = "";
+  ["S","M","T","W","T","F","S"].forEach(d=>{
+    const el = document.createElement("div"); el.className="cal-dow"; el.textContent=d; grid.appendChild(el);
+  });
+  const first = new Date(calYear, calMonth, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const todayStr = new Date(2026,8,2).toDateString(); // fixed "today" for demo consistency
+
+  const marked = new Set(deadlines.filter(d=>{
+    const dt = new Date(d.date+"T00:00:00");
+    return dt.getFullYear()===calYear && dt.getMonth()===calMonth;
+  }).map(d=> new Date(d.date+"T00:00:00").getDate()));
+
+  for(let i=0;i<startDow;i++){
+    const el = document.createElement("div"); el.className="cal-day empty"; grid.appendChild(el);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const el = document.createElement("div");
+    const dt = new Date(calYear, calMonth, day);
+    el.className = "cal-day" + (dt.toDateString()===todayStr ? " today":"");
+    el.innerHTML = day + (marked.has(day) ? '<span class="dmark"></span>' : "");
+    grid.appendChild(el);
+  }
+}
+document.getElementById("calPrev").addEventListener("click", ()=>{
+  calMonth--; if(calMonth<0){calMonth=11; calYear--;} renderCalendar();
+});
+document.getElementById("calNext").addEventListener("click", ()=>{
+  calMonth++; if(calMonth>11){calMonth=0; calYear++;} renderCalendar();
+});
+
+function renderDeadlineList(){
+  const wrap = document.getElementById("deadlineList");
+  wrap.innerHTML = "";
+  const sorted = [...deadlines].sort((a,b)=> new Date(a.date) - new Date(b.date));
+  sorted.forEach(d=>{
+    const el = document.createElement("div");
+    el.className = "deadline-card" + (d.type==="exam" ? " exam":"");
+    const dt = new Date(d.date+"T00:00:00");
+    const label = dt.toLocaleDateString("en-US",{month:"short", day:"numeric"}).toUpperCase();
+    el.innerHTML = `<div class="dl-date">${label} · ${d.type==="exam"?"EXAM":"ASSIGNMENT"}</div><h5>${d.title}</h5><span class="subj">${d.subject}</span>`;
+    wrap.appendChild(el);
+  });
+}
+
+/* deadline modal */
+function populateSubjectSelect(){
+  const sel = document.getElementById("dlSubject");
+  sel.innerHTML = subjects.map(s=>`<option value="${s.code}">${s.code} — ${s.name}</option>`).join("");
+}
+document.getElementById("addDeadlineBtn").addEventListener("click", ()=>{
+  if(!currentUser){ openAuthModal("Sign in to add deadlines"); return; }
+  document.getElementById("deadlineModal").classList.add("show");
+});
+document.getElementById("dlCancel").addEventListener("click", ()=> document.getElementById("deadlineModal").classList.remove("show"));
+document.getElementById("dlSave").addEventListener("click", async ()=>{
+  if(!currentUser){ openAuthModal("Sign in to add deadlines"); return; }
+  const title = document.getElementById("dlTitle").value.trim();
+  const subject = document.getElementById("dlSubject").value;
+  const type = document.getElementById("dlType").value;
+  const date = document.getElementById("dlDate").value;
+  if(!title || !date){ showToast("Add a title and date first"); return; }
+  const saveBtn = document.getElementById("dlSave");
+  saveBtn.disabled = true; saveBtn.textContent = "Saving…";
+  try{
+    const deadline = await api("/api/deadlines", {method:"POST", body: JSON.stringify({title, subject, type, date})});
+    deadlines.push(deadline);
+    showToast("Deadline added");
+  }catch(e){
+    showToast("Save failed — try again");
+  }
+  saveBtn.disabled = false; saveBtn.textContent = "Save deadline";
+  document.getElementById("dlTitle").value = "";
+  document.getElementById("dlDate").value = "";
+  document.getElementById("deadlineModal").classList.remove("show");
+  renderCalendar(); renderDeadlineList();
+});
+
+/* toast */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 2200);
+}
+
+/* init */
+async function init(){
+  try{
+    await loadSubjects();
+  }catch(e){
+    document.getElementById("subjectGrid").innerHTML =
+      '<p style="color:var(--ink-faint); font-size:14px;">Could not reach the backend. Is the server running (npm start)?</p>';
+    return;
+  }
+  depts = ["All", ...new Set(subjects.map(s=>s.dept))];
+  renderDeptChips();
+  renderSubjectGrid();
+  populateSubjectSelect();
+  loadStats();
+  await restoreSession();
+
+  const params = new URLSearchParams(location.search);
+  if(params.get("auth_error")){
+    showToast("Google sign-in failed — please try again");
+    history.replaceState({}, "", location.pathname);
+  }
+}
+init();
+</script>
+</body>
+</html>
