@@ -25,7 +25,7 @@ Target Users:-\
 --Tertiary: Study groups / class representatives who currently informally distribute notes and could formalize it through campus-based communities\
 --Institutional angle: Colleges/coaching institutes that want a structured, moderated alternative to unregulated WhatsApp/Telegram note-sharing
 
-Note: Unfortunately to insufficient credits for the API, the AI option does not work right now.
+Note: Unfortunately due to insufficient credits for the API, the AI option does not work right now.
 
 Instructions:\
 --Have node.js installed\
