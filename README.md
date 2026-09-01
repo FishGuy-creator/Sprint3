@@ -27,6 +27,14 @@ Target Users:-\
 
 Note: Unfortunately to insufficient credits for the API, the AI option does not work right now.
 
+Instructions:\
+--Have node.js installed\
+--Run 'npm install' in a new terminal\
+--If it doesnt work run 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser' and run 'npm install'\
+--Run 'cd .env.example .env'\
+--Run 'npm start' and wait for the link\
+--Press CTRL and click on the link
+
 Team Members:-\
 --Abisekh Ashok\
 --Anushree Nair\
